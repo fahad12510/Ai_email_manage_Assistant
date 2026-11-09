@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Email & Message Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="logo">AI</div>
+      <p class="eyebrow">GROQ-POWERED WRITING TOOL</p>
+      <h1>AI Email & Message Assistant</h1>
+      <p class="subtitle">Turn rough thoughts into clear, polished messages in seconds.</p>
+    </header>
+    <section class="panel">
+      <form method="POST">
+        <label for="message_type">Message type</label>
+        <select id="message_type" name="message_type" required>
+          <option value="">Choose a message type</option>
+          {% for item in message_types %}
+          <option value="{{ item }}" {% if selected_type == item %}selected{% endif %}>{{ item }}</option>
+          {% endfor %}
+        </select>
+        <label for="tone">Writing tone</label>
+        <select id="tone" name="tone" required>
+          <option value="">Choose a tone</option>
+          {% for item in tones %}
+          <option value="{{ item }}" {% if selected_tone == item %}selected{% endif %}>{{ item }}</option>
+          {% endfor %}
+        </select>
+        <label for="rough_message">Your rough message</label>
+        <textarea id="rough_message" name="rough_message" rows="6" placeholder="Example: sir i have fever and cannot come to class tomorrow please allow leave" required>{{ rough_message }}</textarea>
+        <button type="submit">Generate improved message</button>
+      </form>
+    </section>
+    {% if error_message %}
+    <section class="result error" role="alert"><h2>Something needs attention</h2><p>{{ error_message }}</p></section>
+    {% endif %}
+    {% if generated_message %}
+    <section class="result">
+      <div class="result-heading">
+        <div><p class="eyebrow">YOUR AI-GENERATED RESULT</p><h2>Improved message</h2></div>
+        <button class="copy-button" type="button" onclick="copyMessage()">Copy</button>
+      </div>
+      <pre id="generated-message">{{ generated_message }}</pre>
+    </section>
+    {% endif %}
+    <footer>Built with Python, Flask and Groq API</footer>
+  </main>
+  <script>
+    function copyMessage() {
+      const text = document.getElementById("generated-message").innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const button = document.querySelector(".copy-button");
+        button.innerText = "Copied!";
+        setTimeout(() => button.innerText = "Copy", 1500);
+      });
+    }
+  </script>
+</body>
+</html>
